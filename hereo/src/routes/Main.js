@@ -4,17 +4,19 @@ import logo from "../assets/logo.svg";
 function Main() {
 	const [messages, setMessages] = useState([
 		{
-			text: "일단아무렇게나쓴아주엄청나게길고긴문장이다. 하지만 이걸로는 부족하기 때문에 더 길게 쓰고 띄어쓰기를 섞어서 쓴 글이다. 과연 잘 나올까",
+			text: "안뇽",
 			sender: "ai",
 		},
 		{
-			text: "안녕하세요",
+			text: "일단 말해봐",
 			sender: "ai",
 		},
 	]);
 	const [inputValue, setInputValue] = useState("");
 	const [textareaHeight, setTextareaHeight] = useState(40); // 기본 높이를 40px로 설정
+	const [isSending, setIsSending] = useState(false); // 메시지 전송 중 여부
 	const chatEndRef = useRef(null);
+	const textareaRef = useRef(null); // Textarea에 대한 ref 추가
 
 	const handleInputChange = (e) => {
 		setInputValue(e.target.value);
@@ -24,14 +26,59 @@ function Main() {
 
 	const handleSendMessage = () => {
 		if (inputValue.trim()) {
-			setMessages([...messages, { text: inputValue, sender: "me" }]);
-			setInputValue(""); // 입력란 초기화
-			setTextareaHeight(40); // 전송 후 높이를 초기화
+			// 'me' 메시지 추가
+			setIsSending(true); // 메시지 전송 중 상태로 변경
+			setMessages((prevMessages) => {
+				const newMessages = [...prevMessages, { text: inputValue, sender: "me" }];
+				setInputValue(""); // 입력란 초기화
+				setTextareaHeight(40); // 전송 후 높이를 초기화
+
+				// AI 응답 추가
+				setTimeout(() => {
+					replyMessage(newMessages);
+				}, 300); // 1초 후 AI 응답
+
+				return newMessages; // 업데이트된 메시지 목록 반환
+			});
 		}
 	};
 
+	// AI의 응답을 추가하는 함수
+	const replyMessage = (currentMessages) => {
+		// 랜덤으로 선택될 문구 배열
+		const responses = [
+			"서성민은 유명한 꿀벌이라는데",
+			"동희야 꿀 그만 빨아",
+			"전역이 오냐? ㅋㅋ",
+			"슬슬 전역할 때 됐는데",
+			"휴가 나가고 싶다 (어제 휴가 복귀함)",
+			"너잇!",
+			"좋은데?",
+			"진짜 운동하기?",
+			"곧 전역이라는데?",
+			"건조장으로 집합할 수 있도록",
+			"돌돌천",
+		];
+
+		// responses 배열에서 랜덤하게 하나 선택
+		const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+
+		// 선택된 랜덤 문구를 메시지에 추가
+		setMessages([...currentMessages, { text: randomResponse, sender: "ai" }]);
+
+		// 메시지 전송 완료 후 입력창 활성화
+		setIsSending(false);
+
+		// 입력창에 focus
+    setTimeout(() => {
+      textareaRef.current.focus();
+    }, 300);
+
+	};
+
 	const handleKeyPress = (e) => {
-		if (e.key === "Enter" && !e.shiftKey) { // Shift + Enter로 줄바꿈 지원
+		if (e.key === "Enter" && !e.shiftKey) {
+			// Shift + Enter로 줄바꿈 지원
 			e.preventDefault();
 			handleSendMessage();
 		}
@@ -53,11 +100,7 @@ function Main() {
 								padding: "0",
 								display: "flex",
 							}}>
-							<img
-								style={{ height: "5rem", margin: "0" }}
-								src={logo}
-								alt="logo"
-							/>
+							<img style={{ height: "5rem", margin: "0" }} src={logo} alt="logo" />
 						</div>
 						<div
 							className="col"
@@ -119,7 +162,9 @@ function Main() {
 									display: "flex",
 									padding: "5px 10px", // 여백 추가
 									borderRadius: "5px",
-									backgroundColor: msg.sender === "me" ? "#dcf8c6" : "blue",
+									backgroundColor: msg.sender === "me" ? "#20A090" : "white",
+									color: msg.sender === "me" ? "white" : "black",
+									border: msg.sender === "me" ? "" : "solid 2px black",
 									wordWrap: "break-word",
 								}}>
 								{msg.text}
@@ -140,6 +185,7 @@ function Main() {
 					backgroundColor: "white",
 				}}>
 				<textarea
+					ref={textareaRef} // Textarea에 ref 연결
 					style={{
 						flexGrow: 1, // 버튼을 제외한 남은 공간을 꽉 채움
 						border: "none",
@@ -154,6 +200,7 @@ function Main() {
 					onKeyPress={handleKeyPress}
 					value={inputValue}
 					placeholder="메시지를 입력하세요..."
+					disabled={isSending} // 전송 중일 때 비활성화
 				/>
 				<input
 					style={{
@@ -169,6 +216,7 @@ function Main() {
 					onClick={handleSendMessage}
 					type="button"
 					value=">"
+					disabled={isSending} // 전송 중일 때 버튼 비활성화
 				/>
 			</div>
 		</div>
