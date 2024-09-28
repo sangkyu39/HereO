@@ -2,13 +2,16 @@
 import React from "react";
 //로딩할 모든 페이지들을 routes에서 가져오기
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Main from "./routes/Main.js";
+import Chat from "./routes/Chat.js";
+import Home from "./routes/Home.js";
+import Head from "./components/ChatHeader.js";
 
 function router() {
 	return (
 		<div>
 			<Routes>
-				<Route path="/" element={<Main />} />
+				<Route path="/chat" element={<Chat />} />
+				<Route path="/" element={<Home />} />
 			</Routes>
 		</div>
 	);
