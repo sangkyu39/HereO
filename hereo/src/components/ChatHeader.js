@@ -28,10 +28,10 @@ function ChatHeader() {
 		</Header>
 	);
 }
-
 const Header = styled.div`
 	text-align: center;
-	padding: 15px;
+	border-bottom: 2px solid black;
+	margin-bottom: 0.5rem;
 `;
 
 const HeaderContent = styled.div`
@@ -53,13 +53,15 @@ const LogoContainer = styled.div`
 `;
 
 const Logo = styled.img`
-	height: 5rem;
+	height: 4rem;
 	margin: 0;
 `;
 
 const Title = styled.h1`
 	margin: 0;
 	width: 100%;
+	font-size: 3rem;
+	font-weight: 700;
 `;
 
 export default ChatHeader;
